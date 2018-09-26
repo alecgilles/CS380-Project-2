@@ -1,4 +1,4 @@
-package puzzle.solver;
+package puzzle.solver.ui;
 
 import java.util.Observable;
 import java.util.Observer;
