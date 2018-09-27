@@ -5,6 +5,7 @@
  */
 package puzzle.solver;
 
+import java.util.Arrays;
 import puzzle.solver.ui.PuzzlePanel;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -29,8 +30,17 @@ public class App extends Application {
             {7,0,5}
         };
         
+        int[][] state1 = {
+            {2,6,8},
+            {1,3,4},
+            {7,0,5}
+        };
+        
         Puzzle puzz = new Puzzle(state);
         System.out.println(puzz);
+        Solver solver = new Solver(puzz);
+        
+        System.out.println(Arrays.deepHashCode(state1) == Arrays.deepHashCode(puzz.getState()));
         
         PuzzlePanel puzzPanel = new PuzzlePanel(BOARD_WIDTH, BOARD_HEIGHT);
         puzz.addObserver(puzzPanel);

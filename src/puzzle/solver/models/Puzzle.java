@@ -100,6 +100,10 @@ public class Puzzle extends Observable {
         }
     }
     
+    public int[][] getState() {
+        return state;
+    }
+    
     @Override
     public void addObserver(Observer o) {
         super.addObserver(o);
