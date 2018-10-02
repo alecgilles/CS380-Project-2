@@ -5,12 +5,10 @@
  */
 package puzzle.solver;
 
-import java.util.Arrays;
 import puzzle.solver.ui.PuzzlePanel;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import puzzle.solver.models.Puzzle;
@@ -24,11 +22,17 @@ public class App extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+        
+        int[][] state = {
+            {0,5,4},
+            {2,8,3},
+            {6,7,1}
+        };/*
         int[][] state = {
             {2,8,6},
             {1,3,4},
             {7,0,5}
-        };
+        };*/
         
         Puzzle puzz = new Puzzle(state);
         System.out.println(puzz);

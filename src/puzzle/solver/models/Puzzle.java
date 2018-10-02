@@ -14,11 +14,94 @@ import java.util.Observer;
  */
 public class Puzzle extends Observable {
 
+    private boolean locked = false;
     private int[][] state;
     int size;
     private int posCol, posRow;
 
+    private Puzzle() {}
+    
     public Puzzle(int[][] state) {
+        setState(state);
+    }
+    
+    public boolean canMoveLeft() {
+        return posCol > 0 && !locked;
+    }
+    
+    public boolean canMoveRight() {
+        return posCol < size - 1 && !locked;
+    }
+    
+    public boolean canMoveUp() {
+        return posRow > 0 && !locked;
+    }
+    
+    public boolean canMoveDown() {
+        return posRow < size - 1 && !locked;
+    }
+    
+    public boolean moveLeft() {
+        if(canMoveLeft()) {
+            state[posRow][posCol] = state[posRow][posCol - 1];
+            posCol -= 1;
+            state[posRow][posCol] = 0;
+            
+            setChanged();
+            notifyObservers(state);
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public boolean moveRight() {
+        if(canMoveRight()) {
+            state[posRow][posCol] = state[posRow][posCol + 1];
+            posCol += 1;
+            state[posRow][posCol] = 0;
+            
+            setChanged();
+            notifyObservers(state);
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public boolean moveUp() {
+        if(canMoveUp()) {
+            state[posRow][posCol] = state[posRow - 1][posCol];
+            posRow -= 1;
+            state[posRow][posCol] = 0;
+            
+            setChanged();
+            notifyObservers(state);
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public boolean moveDown() {
+        if(canMoveDown()) {
+            state[posRow][posCol] = state[posRow + 1][posCol];
+            posRow += 1;
+            state[posRow][posCol] = 0;
+            
+            setChanged();
+            notifyObservers(state);
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public final void setState(int[][] state) {
         if (state != null && state.length > 0) {
             size = state.length;
             this.state = new int[state.length][];
@@ -35,73 +118,50 @@ public class Puzzle extends Observable {
                     }
                 }
             }
+            
+            setChanged();
+            notifyObservers(this.state);
         } else {
             throw new IllegalArgumentException("State must be a non-empty 2D integer array");
         }
     }
     
-    public boolean canMoveLeft() {
-        return posCol > 0;
-    }
-    
-    public boolean canMoveRight() {
-        return posCol < size - 1;
-    }
-    
-    public boolean canMoveUp() {
-        return posRow > 0;
-    }
-    
-    public boolean canMoveDown() {
-        return posRow < size - 1;
-    }
-    
-    public void moveLeft() {
-        if(canMoveLeft()) {
-            state[posRow][posCol] = state[posRow][posCol - 1];
-            posCol -= 1;
-            state[posRow][posCol] = 0;
-            
-            setChanged();
-            notifyObservers(state);
-        }
-    }
-    
-    public void moveRight() {
-        if(canMoveRight()) {
-            state[posRow][posCol] = state[posRow][posCol + 1];
-            posCol += 1;
-            state[posRow][posCol] = 0;
-            
-            setChanged();
-            notifyObservers(state);
-        }
-    }
-    
-    public void moveUp() {
-        if(canMoveUp()) {
-            state[posRow][posCol] = state[posRow - 1][posCol];
-            posRow -= 1;
-            state[posRow][posCol] = 0;
-            
-            setChanged();
-            notifyObservers(state);
-        }
-    }
-    
-    public void moveDown() {
-        if(canMoveDown()) {
-            state[posRow][posCol] = state[posRow + 1][posCol];
-            posRow += 1;
-            state[posRow][posCol] = 0;
-            
-            setChanged();
-            notifyObservers(state);
-        }
-    }
-    
     public int[][] getState() {
-        return state;
+        int[][] copy = new int[size][];
+        
+        for(int i = 0; i < state.length; i++) {
+            copy[i] = new int[state[i].length];
+            System.arraycopy(state[i], 0, copy[i], 0, state[i].length);
+        }
+        
+        return copy;
+    }
+    
+    public Puzzle quickCopy() {
+        Puzzle copy = new Puzzle();
+        copy.size = size;
+        copy.posCol = posCol;
+        copy.posRow = posRow;
+        copy.state = this.getState();
+          
+        return copy;
+    }
+    
+    public boolean lock() {
+        if(locked) {
+            return false;
+        }
+        
+        locked = true;
+        return true;
+    }
+    
+    public void unlock() {
+        locked = false;
+    }
+    
+    public boolean isLocked() {
+        return locked;
     }
     
     @Override
