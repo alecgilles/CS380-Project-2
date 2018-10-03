@@ -5,6 +5,7 @@ import java.util.Observer;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import puzzle.solver.Solver;
 
 /**
  *
@@ -12,11 +13,16 @@ import javafx.scene.layout.HBox;
  */
 public class SolverPanel extends HBox implements Observer {
     
-    public SolverPanel() {
+    private Solver solver;
+    
+    public SolverPanel(Solver solver) {
+        this.solver = solver;
+        
         setPadding(new Insets(15, 15, 15, 15));
         setStyle("-fx-background-color: #adadad;");
         
         Button solveButton = new Button("Solve");
+
         super.getChildren().add(solveButton);
     }
 

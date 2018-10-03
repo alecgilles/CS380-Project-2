@@ -16,7 +16,7 @@ import puzzle.solver.models.StateNode;
  * @author gillab01
  */
 public class Solver extends Observable {
-    private final static long SOLVE_VISUALIZATION_STEP_DELAY = 250;
+    private final static long SOLVE_VISUALIZATION_STEP_DELAY = 500;
     private Puzzle puzzle;
     private StateNode rootState;
     private Queue<StateNode> fringe;
