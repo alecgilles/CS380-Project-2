@@ -66,9 +66,6 @@ public class App extends Application {
                 case DOWN:
                     puzz.moveDown();
                     break;
-                case ENTER:
-                    solver.solve();
-                    break;
                 default:
                     break;
             }

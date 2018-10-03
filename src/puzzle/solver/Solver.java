@@ -16,12 +16,23 @@ import puzzle.solver.models.StateNode;
  * @author gillab01
  */
 public class Solver extends Observable {
+    
     private final static long SOLVE_VISUALIZATION_STEP_DELAY = 500;
+    
+    public static enum State {
+        IDLE,
+        SEARCHING,
+        SUCCESS,
+        FAILURE
+    }
+    
     private Puzzle puzzle;
     private StateNode rootState;
     private Queue<StateNode> fringe;
     // Set of deep hashed state arrays that have been visited already
     private HashSet<Long> statesVisited;
+    
+    private State state = State.IDLE;
     
     private Timer changeTimer = new Timer("CHANGE_TIMER", true);
     private boolean changeTimerRunning = false;
@@ -32,6 +43,10 @@ public class Solver extends Observable {
     }
 
     public void solve() {
+        state = State.SEARCHING;
+        setChanged();
+        notifyObservers();
+        
         fringe = new LinkedList<>();
         statesVisited = new HashSet<>();
         ArrayList<Puzzle> solutionPath = new ArrayList<>();
@@ -104,6 +119,10 @@ public class Solver extends Observable {
                 cursor = cursor.getParent();
             }
             
+            state = State.SUCCESS;
+            setChanged();
+            notifyObservers();
+            
             System.out.println("Steps: " + (solutionPath.size() - 1));
             
             for(Puzzle puzz : solutionPath) {
@@ -113,6 +132,9 @@ public class Solver extends Observable {
 
         } else {
             System.out.println("No solution found.");
+            state = State.FAILURE;
+            setChanged();
+            notifyObservers();
         }
     }
     
@@ -139,6 +161,10 @@ public class Solver extends Observable {
             } else {
                 changes.add(step);
             }
+    }
+    
+    public State getCurrentState() {
+        return state;
     }
     
     @Override
