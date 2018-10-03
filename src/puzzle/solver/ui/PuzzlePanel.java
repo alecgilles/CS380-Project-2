@@ -19,10 +19,6 @@ import javafx.scene.text.TextAlignment;
 public class PuzzlePanel extends Canvas implements Observer {
 
     private static final double BOX_PADDING_PERCENT = 0.05;
-    
-    private Timer changeTimer = new Timer("CHANGE_TIMER", true);
-    private boolean timerRunning = false;
-    private Queue<int[][]> changes = new LinkedList<>();
 
     public PuzzlePanel(double displayWidth, double displayHeight) {
         super(displayWidth, displayHeight);
@@ -79,26 +75,7 @@ public class PuzzlePanel extends Canvas implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(arg != null) {
-            TimerTask changeTask = new TimerTask(){
-                    @Override
-                    public void run() {
-                        if(!changes.isEmpty()) {
-                            draw(changes.remove());
-                        } else {
-                            this.cancel();
-                            timerRunning = false;
-                        }
-                    } 
-                };
-            
-            if(!timerRunning && changes.isEmpty()) {
-                draw((int[][])arg);
-                
-                changeTimer.schedule(changeTask, 500, 500);
-                timerRunning = true;
-            } else {
-                changes.add((int[][])arg);
-            }
+            draw((int[][])arg);
         }
     }
 }

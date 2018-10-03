@@ -4,12 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 import puzzle.solver.models.Puzzle;
 import puzzle.solver.models.StateNode;
 
@@ -23,6 +19,10 @@ public class Solver {
     private Queue<StateNode> fringe;
     // Set of deep hashed state arrays that have been visited already
     private HashSet<Long> statesVisited;
+    
+    private Timer changeTimer = new Timer("CHANGE_TIMER", true);
+    private boolean changeTimerRunning = false;
+    private Queue<int[][]> changes = new LinkedList<>();
 
     public Solver(Puzzle puzzle) {
         this.puzzle = puzzle;
@@ -104,12 +104,37 @@ public class Solver {
             System.out.println("Steps: " + (solutionPath.size() - 1));
             
             for(Puzzle puzz : solutionPath) {
-                puzzle.setState(puzz.getState());
+                queueSolutionStep(puzz.getState());
                 System.out.println(puzz);
             }
-            puzzle.unlock();
+
         } else {
             System.out.println("No solution found.");
         }
+    }
+    
+    private void queueSolutionStep(int[][] step) {
+        TimerTask changeTask = new TimerTask(){
+                    @Override
+                    public void run() {
+                        if(!changes.isEmpty()) {
+                            puzzle.lock();
+                            puzzle.setState(changes.remove());
+                        } else {
+                            this.cancel();
+                            changeTimerRunning = false;
+                            puzzle.unlock();
+                        }
+                    } 
+                };
+            
+            if(!changeTimerRunning && changes.isEmpty()) {
+                puzzle.setState(step);
+                
+                changeTimer.schedule(changeTask, 500, 500);
+                changeTimerRunning = true;
+            } else {
+                changes.add(step);
+            }
     }
 }
