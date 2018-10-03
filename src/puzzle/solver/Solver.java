@@ -3,6 +3,8 @@ package puzzle.solver;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,7 +15,8 @@ import puzzle.solver.models.StateNode;
  *
  * @author gillab01
  */
-public class Solver {
+public class Solver extends Observable {
+    private final static long SOLVE_VISUALIZATION_STEP_DELAY = 250;
     private Puzzle puzzle;
     private StateNode rootState;
     private Queue<StateNode> fringe;
@@ -26,16 +29,17 @@ public class Solver {
 
     public Solver(Puzzle puzzle) {
         this.puzzle = puzzle;
-        fringe = new LinkedList<>();
-        statesVisited = new HashSet<>();
     }
 
     public void solve() {
+        fringe = new LinkedList<>();
+        statesVisited = new HashSet<>();
         ArrayList<Puzzle> solutionPath = new ArrayList<>();
         StateNode solution = null;
+        int nodesSearched = 0;
+        
         rootState = new StateNode(null, puzzle.quickCopy());
         fringe.add(rootState);
-        int nodesSearched = 0;
         
         while(!fringe.isEmpty()) {
             StateNode current = fringe.remove();
@@ -46,7 +50,6 @@ public class Solver {
             }
             
             statesVisited.add(currentStateHash);
-            
             nodesSearched++;
             
             if(current.getPuzzle().isSolved()) {
@@ -131,10 +134,17 @@ public class Solver {
             if(!changeTimerRunning && changes.isEmpty()) {
                 puzzle.setState(step);
                 
-                changeTimer.schedule(changeTask, 500, 500);
+                changeTimer.schedule(changeTask, SOLVE_VISUALIZATION_STEP_DELAY, SOLVE_VISUALIZATION_STEP_DELAY);
                 changeTimerRunning = true;
             } else {
                 changes.add(step);
             }
+    }
+    
+    @Override
+    public void addObserver(Observer o) {
+        super.addObserver(o);
+        setChanged();
+        notifyObservers();
     }
 }

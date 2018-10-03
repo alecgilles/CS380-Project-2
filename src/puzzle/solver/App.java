@@ -2,17 +2,19 @@ package puzzle.solver;
 
 import puzzle.solver.ui.PuzzlePanel;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import puzzle.solver.models.Puzzle;
+import puzzle.solver.ui.SolverPanel;
 
 /**
  *
  * @author gillab01
  */
 public class App extends Application {
+    private static final String WINDOW_TITLE = "Puzzle Solver";
     private static final int  BOARD_WIDTH = 600, BOARD_HEIGHT = 600;
     
     @Override
@@ -30,16 +32,22 @@ public class App extends Application {
         };*/
         
         Puzzle puzz = new Puzzle(state);
-        System.out.println(puzz);
         Solver solver = new Solver(puzz);
+        
+        System.out.println("Initial Puzzle:");
+        System.out.println(puzz);
+        
+        BorderPane root = new BorderPane();
         
         PuzzlePanel puzzPanel = new PuzzlePanel(BOARD_WIDTH, BOARD_HEIGHT);
         puzz.addObserver(puzzPanel);
+        root.setCenter(puzzPanel);
         
-        Group root = new Group();
-        root.getChildren().add(puzzPanel);
+        SolverPanel solverPanel = new SolverPanel();
+        solver.addObserver(solverPanel);
+        root.setBottom(solverPanel);
         
-        primaryStage.setTitle("Puzzle Solver");
+        primaryStage.setTitle(WINDOW_TITLE);
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
         primaryStage.show();

@@ -1,16 +1,13 @@
 package puzzle.solver.ui;
 
-import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Queue;
-import java.util.Timer;
-import java.util.TimerTask;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import puzzle.solver.models.Puzzle;
 
 /**
  *
@@ -24,7 +21,7 @@ public class PuzzlePanel extends Canvas implements Observer {
         super(displayWidth, displayHeight);
     }
 
-    private void draw(int[][] state) {
+    private void draw(Puzzle puzzle, int[][] state) {
         int size = state.length;
         
         GraphicsContext gc = getGraphicsContext2D();
@@ -52,7 +49,11 @@ public class PuzzlePanel extends Canvas implements Observer {
                 double yPos = i * boxOffsetY + yPadding;
                 
                 if (state[i][j] != 0) {
-                    gc.setFill(Color.LIGHTGRAY);
+                    if(puzzle.isSolved()) {
+                        gc.setFill(Color.LIMEGREEN);
+                    } else {
+                        gc.setFill(Color.rgb(51,102,153));
+                    }
                     gc.setStroke(Color.BLACK);
                     gc.fillRect(xPos, yPos, boxWidth, boxHeight);
                     gc.strokeRect(xPos, yPos, boxWidth, boxHeight);
@@ -74,8 +75,8 @@ public class PuzzlePanel extends Canvas implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if(arg != null) {
-            draw((int[][])arg);
+        if(o != null && arg != null) {
+            draw((Puzzle) o, (int[][])arg);
         }
     }
 }
