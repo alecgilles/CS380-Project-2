@@ -18,13 +18,6 @@ import puzzle.solver.models.StateNode;
  * @author gillab01
  */
 public class Solver {
-
-    private final static long SUCCESS_STATE_HASH = hashState( new int[][] {
-        {1, 2, 3},
-        {8, 0, 4},
-        {7, 6, 5}
-    });
-    
     private Puzzle puzzle;
     private StateNode rootState;
     private Queue<StateNode> fringe;
@@ -46,7 +39,7 @@ public class Solver {
         
         while(!fringe.isEmpty()) {
             StateNode current = fringe.remove();
-            long currentStateHash = hashState(current.getPuzzle().getState());
+            long currentStateHash = current.getPuzzle().getStateHash();
             
             if(statesVisited.contains(currentStateHash)) {
                 continue;
@@ -56,7 +49,7 @@ public class Solver {
             
             nodesSearched++;
             
-            if(currentStateHash == SUCCESS_STATE_HASH) {
+            if(current.getPuzzle().isSolved()) {
                 System.out.println("Search Success!");
                 System.out.println("Searched: "+nodesSearched+" nodes.");
                 solution = current;
@@ -118,17 +111,5 @@ public class Solver {
         } else {
             System.out.println("No solution found.");
         }
-    }
-    
-    private static long hashState(int[][] state) {
-        String hash = "";
-        
-        for(int i = 0; i < state.length; i++) {
-            for(int j = 0; j < state[i].length; j++) {
-                hash += state[i][j];
-            }
-        }
-        
-        return Long.parseUnsignedLong(hash);
     }
 }

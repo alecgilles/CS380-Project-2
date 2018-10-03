@@ -13,6 +13,12 @@ import java.util.Observer;
  * @author gillab01
  */
 public class Puzzle extends Observable {
+    
+    private final static long SUCCESS_STATE_HASH = getStateHash( new int[][] {
+        {1, 2, 3},
+        {8, 0, 4},
+        {7, 6, 5}
+    });
 
     private boolean locked = false;
     private int[][] state;
@@ -162,6 +168,26 @@ public class Puzzle extends Observable {
     
     public boolean isLocked() {
         return locked;
+    }
+    
+    public boolean isSolved() {
+        return getStateHash() == SUCCESS_STATE_HASH;
+    }
+    
+    public long getStateHash() {
+        return getStateHash(this.state);
+    }
+    
+    private static long getStateHash(int[][] state) {
+        String hash = "";
+        
+        for(int i = 0; i < state.length; i++) {
+            for(int j = 0; j < state[i].length; j++) {
+                hash += state[i][j];
+            }
+        }
+        
+        return Long.parseUnsignedLong(hash);
     }
     
     @Override
