@@ -43,7 +43,7 @@ public class App extends Application {
         puzz.addObserver(puzzPanel);
         root.setCenter(puzzPanel);
         
-        SolverPanel solverPanel = new SolverPanel(solver);
+        SolverPanel solverPanel = new SolverPanel(solver, 100);
         solver.addObserver(solverPanel);
         root.setBottom(solverPanel);
         

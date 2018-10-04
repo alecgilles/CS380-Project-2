@@ -29,8 +29,9 @@ public class Solver extends Observable {
     private Puzzle puzzle;
     private StateNode rootState;
     private Queue<StateNode> fringe;
-    // Set of deep hashed state arrays that have been visited already
+    // Set of hashed state arrays that have been visited already
     private HashSet<Long> statesVisited;
+    private ArrayList<Puzzle> solutionPath;
     
     private State state = State.IDLE;
     
@@ -49,9 +50,8 @@ public class Solver extends Observable {
         
         fringe = new LinkedList<>();
         statesVisited = new HashSet<>();
-        ArrayList<Puzzle> solutionPath = new ArrayList<>();
+        solutionPath = new ArrayList<>();
         StateNode solution = null;
-        int nodesSearched = 0;
         
         rootState = new StateNode(null, puzzle.quickCopy());
         fringe.add(rootState);
@@ -65,11 +65,10 @@ public class Solver extends Observable {
             }
             
             statesVisited.add(currentStateHash);
-            nodesSearched++;
             
             if(current.getPuzzle().isSolved()) {
                 System.out.println("Search Success!");
-                System.out.println("Searched: "+nodesSearched+" nodes.");
+                System.out.println("Searched: "+statesVisited.size()+" nodes.");
                 solution = current;
                 break;
             }
@@ -165,6 +164,14 @@ public class Solver extends Observable {
     
     public State getCurrentState() {
         return state;
+    }
+    
+    public int getNumberStatesSearched() {
+        return statesVisited.size();
+    }
+    
+    public int getNumberSolutionSteps() {
+        return solutionPath.size() - 1;
     }
     
     @Override

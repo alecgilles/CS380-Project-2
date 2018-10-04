@@ -17,7 +17,8 @@ public class SolverPanel extends HBox implements Observer {
     private Solver solver;
     private Text status;
     
-    public SolverPanel(Solver solver) {
+    public SolverPanel(Solver solver, double height) {
+        super.setMinHeight(height);
         this.solver = solver;
         
         setPadding(new Insets(15, 15, 15, 15));
@@ -38,14 +39,22 @@ public class SolverPanel extends HBox implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        String statusString = "";
         switch(solver.getCurrentState()) {
+            case SEARCHING:
+                statusString += "Searching for solution...";
+                break;
             case SUCCESS:
-                status.setText("Solution found!");
+                statusString += "Solution found!\n";
+                statusString += "Searched: " + solver.getNumberStatesSearched() + " nodes\n";
+                statusString += "Steps: " + solver.getNumberSolutionSteps();
                 break;
             case FAILURE:
-                status.setText("No solution was found.");
+                statusString += "No solution was found.";
                 break;
         }
+        
+        status.setText(statusString);
     }
     
 }
