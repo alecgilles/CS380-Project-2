@@ -56,6 +56,9 @@ public class Solver extends Observable {
         rootState = new StateNode(null, puzzle.quickCopy());
         fringe.add(rootState);
         
+        setChanged();
+        notifyObservers(rootState);
+        
         while(!fringe.isEmpty()) {
             StateNode current = fringe.remove();
             long currentStateHash = current.getPuzzle().getStateHash();

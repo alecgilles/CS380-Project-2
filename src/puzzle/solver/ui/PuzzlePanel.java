@@ -69,13 +69,13 @@ public class PuzzlePanel extends Canvas implements Observer {
                 }
             }
         }
-
+        
         gc.restore();
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        if(o != null && arg != null) {
+        if(o != null && arg != null && arg instanceof int[][]) {
             draw((Puzzle) o, (int[][])arg);
         }
     }

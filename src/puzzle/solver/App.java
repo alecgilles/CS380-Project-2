@@ -2,11 +2,15 @@ package puzzle.solver;
 
 import puzzle.solver.ui.PuzzlePanel;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import puzzle.solver.models.Puzzle;
+import puzzle.solver.ui.SearchVisualizationPanel;
 import puzzle.solver.ui.SolverPanel;
 
 /**
@@ -38,13 +42,21 @@ public class App extends Application {
         System.out.println(puzz);
         
         BorderPane root = new BorderPane();
+        BorderPane canvasPane = new BorderPane();
+        canvasPane.setPadding(new Insets(10, 10, 10, 10));
         
         PuzzlePanel puzzPanel = new PuzzlePanel(BOARD_WIDTH, BOARD_HEIGHT);
         puzz.addObserver(puzzPanel);
-        root.setCenter(puzzPanel);
+        canvasPane.setLeft(puzzPanel);
         
         SolverPanel solverPanel = new SolverPanel(solver, 100);
         solver.addObserver(solverPanel);
+        
+        SearchVisualizationPanel searchVis = new SearchVisualizationPanel(BOARD_WIDTH, BOARD_HEIGHT);
+        solver.addObserver(searchVis);
+        canvasPane.setRight(searchVis);
+        
+        root.setTop(canvasPane);
         root.setBottom(solverPanel);
         
         primaryStage.setTitle(WINDOW_TITLE);
