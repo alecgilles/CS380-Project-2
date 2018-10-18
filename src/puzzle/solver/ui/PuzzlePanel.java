@@ -10,20 +10,35 @@ import javafx.scene.text.TextAlignment;
 import puzzle.solver.models.Puzzle;
 
 /**
+ * Displays a puzzle as a GUI element.
  *
- * @author gillab01
+ * @author Alec Gilles
  */
 public class PuzzlePanel extends Canvas implements Observer {
 
     private static final double BOX_PADDING_PERCENT = 0.05;
 
+    /**
+     * Creates a new puzzle panel that will display a linked Puzzle. Implements
+     * Observer, so simply needs to be registered with Puzzle to begin
+     * displaying its state.
+     *
+     * @param displayWidth The desired width of the panel in pixels.
+     * @param displayHeight The desired height of the panel in pixels.
+     */
     public PuzzlePanel(double displayWidth, double displayHeight) {
         super(displayWidth, displayHeight);
     }
 
+    /**
+     * Draws a the puzzle on the internal canvas.
+     *
+     * @param puzzle
+     * @param state
+     */
     private void draw(Puzzle puzzle, int[][] state) {
         int size = state.length;
-        
+
         GraphicsContext gc = getGraphicsContext2D();
         gc.save();
 
@@ -39,20 +54,20 @@ public class PuzzlePanel extends Canvas implements Observer {
         double fontHeight = boxHeight * 0.8;
 
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
-        
+
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(new Font(fontHeight));
-        
+
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 double xPos = j * boxOffsetX + xPadding;
                 double yPos = i * boxOffsetY + yPadding;
-                
+
                 if (state[i][j] != 0) {
-                    if(puzzle.isSolved()) {
+                    if (puzzle.isSolved()) {
                         gc.setFill(Color.LIMEGREEN);
                     } else {
-                        gc.setFill(Color.rgb(51,102,153));
+                        gc.setFill(Color.rgb(51, 102, 153));
                     }
                     gc.setStroke(Color.BLACK);
                     gc.fillRect(xPos, yPos, boxWidth, boxHeight);
@@ -63,20 +78,20 @@ public class PuzzlePanel extends Canvas implements Observer {
                 } else {
                     gc.setStroke(Color.BLACK);
                     gc.strokeRect(xPos, yPos, boxWidth, boxHeight);
-                    
+
                     gc.setFill(Color.LIGHTGRAY);
                     gc.fillText("X", xPos + boxWidth / 2, yPos + fontHeight);
                 }
             }
         }
-        
+
         gc.restore();
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        if(o != null && arg != null && arg instanceof int[][]) {
-            draw((Puzzle) o, (int[][])arg);
+        if (o != null && arg != null && arg instanceof int[][]) {
+            draw((Puzzle) o, (int[][]) arg);
         }
     }
 }

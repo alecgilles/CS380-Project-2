@@ -9,38 +9,45 @@ import javafx.scene.text.Text;
 import puzzle.solver.Solver;
 
 /**
+ * Allows the user to control and view the status of the Solver.
  *
- * @author gillab01
+ * @author Alec Gilles
  */
 public class SolverPanel extends HBox implements Observer {
-    
+
     private Solver solver;
-    private Text status;
-    
+    private final Text status;
+
+    /**
+     * Creates a solver panel associated with the provided Solver.
+     *
+     * @param solver The solver instance to link with this panel.
+     * @param height The desired height of this panel.
+     */
     public SolverPanel(Solver solver, double height) {
         super.setMinHeight(height);
         this.solver = solver;
-        
+
         setPadding(new Insets(15, 15, 15, 15));
         setSpacing(15);
         setStyle("-fx-background-color: #adadad;");
-        
+
         Button solveButton = new Button("Solve");
         solveButton.setDefaultButton(true);
         solveButton.setOnAction(event -> {
             this.solver.solve();
         });
         super.getChildren().add(solveButton);
-        
+
         status = new Text();
         super.getChildren().add(status);
-        
+
     }
 
     @Override
     public void update(Observable o, Object arg) {
         String statusString = "";
-        switch(solver.getCurrentState()) {
+        switch (solver.getCurrentState()) {
             case SEARCHING:
                 statusString += "Searching for solution...";
                 break;
@@ -53,8 +60,8 @@ public class SolverPanel extends HBox implements Observer {
                 statusString += "No solution was found.";
                 break;
         }
-        
+
         status.setText(statusString);
     }
-    
+
 }
